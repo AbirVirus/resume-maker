@@ -1,7 +1,16 @@
-import { PrismaClient, ProficiencyLevel } from "../src/generated/prisma";
+import dotenv from "dotenv";
+import { PrismaClient, ProficiencyLevel } from "../src/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
+dotenv.config({ override: true });
+
+function getPrisma() {
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+  return new PrismaClient({ adapter });
+}
+
+const prisma = getPrisma();
 
 async function main() {
   // Clean existing data
@@ -70,9 +79,9 @@ async function main() {
   });
 
   const workDates = [
-    { start: new Date("2023-03-01"), end: null, isCurrent: true },
-    { start: new Date("2020-06-01"), end: new Date("2023-02-28"), isCurrent: false },
-    { start: new Date("2018-09-01"), end: new Date("2020-05-31"), isCurrent: false },
+    { startDate: new Date("2023-03-01"), endDate: null, isCurrent: true },
+    { startDate: new Date("2020-06-01"), endDate: new Date("2023-02-28"), isCurrent: false },
+    { startDate: new Date("2018-09-01"), endDate: new Date("2020-05-31"), isCurrent: false },
   ];
 
   const workExps = [
