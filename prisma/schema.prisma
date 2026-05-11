@@ -1,0 +1,293 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProficiencyLevel {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+enum ResumeStatus {
+  draft
+  complete
+}
+
+enum SuggestionStatus {
+  pending
+  accepted
+  rejected
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String?
+  name         String
+  avatarUrl    String?   @map("avatar_url")
+  googleId     String?   @unique @map("google_id")
+  aiCredits    Int       @default(20) @map("ai_credits")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  resumes        Resume[]
+  coverLetters   CoverLetter[]
+  aiSuggestions  AISuggestion[]
+
+  @@map("users")
+}
+
+model Resume {
+  id            String       @id @default(uuid())
+  userId        String       @map("user_id")
+  title         String       @default("Untitled Resume")
+  templateId    String       @default("classic") @map("template_id")
+  primaryColor  String       @default("#1e3a5f") @map("primary_color")
+  fontFamily    String       @default("inter") @map("font_family")
+  fontSize      String       @default("medium") @map("font_size")
+  sectionOrder  Json         @default("[\"personalInfo\",\"summary\",\"workExperience\",\"education\",\"skills\",\"projects\",\"certifications\",\"languages\",\"volunteerWork\",\"references\"]") @map("section_order")
+  status        ResumeStatus @default(draft)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personalInfo      PersonalInfo?
+  summary           ProfessionalSummary?
+  workExperiences   WorkExperience[]
+  educations        Education[]
+  skills            Skill[]
+  projects          Project[]
+  certifications    Certification[]
+  languages         Language[]
+  volunteerWorks    VolunteerWork[]
+  references        ReferenceEntry[]
+  coverLetters      CoverLetter[]
+  aiSuggestions     AISuggestion[]
+
+  @@index([userId])
+  @@map("resumes")
+}
+
+model PersonalInfo {
+  id        String  @id @default(uuid())
+  resumeId  String  @unique @map("resume_id")
+  fullName  String  @default("") @map("full_name")
+  email     String  @default("")
+  phone     String  @default("")
+  location  String  @default("")
+  linkedin  String  @default("")
+  website   String  @default("")
+  github    String  @default("")
+  photoUrl  String? @map("photo_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("personal_infos")
+}
+
+model ProfessionalSummary {
+  id        String   @id @default(uuid())
+  resumeId  String   @unique @map("resume_id")
+  content   String   @default("")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("professional_summaries")
+}
+
+model WorkExperience {
+  id          String   @id @default(uuid())
+  resumeId    String   @map("resume_id")
+  sortOrder   Int      @default(0) @map("sort_order")
+  companyName String   @default("") @map("company_name")
+  jobTitle    String   @default("") @map("job_title")
+  location    String   @default("")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  isCurrent   Boolean  @default(false) @map("is_current")
+  description String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("work_experiences")
+}
+
+model Education {
+  id            String   @id @default(uuid())
+  resumeId      String   @map("resume_id")
+  sortOrder     Int      @default(0) @map("sort_order")
+  schoolName    String   @default("") @map("school_name")
+  degree        String   @default("")
+  fieldOfStudy  String   @default("") @map("field_of_study")
+  startDate     DateTime? @map("start_date")
+  endDate       DateTime? @map("end_date")
+  gpa           String   @default("")
+  description   String   @default("")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("educations")
+}
+
+model Skill {
+  id               String           @id @default(uuid())
+  resumeId         String           @map("resume_id")
+  sortOrder        Int              @default(0) @map("sort_order")
+  category         String?
+  skillName        String           @default("") @map("skill_name")
+  proficiencyLevel ProficiencyLevel @default(intermediate) @map("proficiency_level")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("skills")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  resumeId    String   @map("resume_id")
+  sortOrder   Int      @default(0) @map("sort_order")
+  projectName String   @default("") @map("project_name")
+  role        String   @default("")
+  url         String   @default("")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  description String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("projects")
+}
+
+model Certification {
+  id            String   @id @default(uuid())
+  resumeId      String   @map("resume_id")
+  sortOrder     Int      @default(0) @map("sort_order")
+  name          String   @default("")
+  issuer        String   @default("")
+  issueDate     DateTime? @map("issue_date")
+  expiryDate    DateTime? @map("expiry_date")
+  credentialUrl String   @default("") @map("credential_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("certifications")
+}
+
+model Language {
+  id          String           @id @default(uuid())
+  resumeId    String           @map("resume_id")
+  sortOrder   Int              @default(0) @map("sort_order")
+  language    String           @default("")
+  proficiency ProficiencyLevel @default(intermediate)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("languages")
+}
+
+model VolunteerWork {
+  id               String   @id @default(uuid())
+  resumeId         String   @map("resume_id")
+  sortOrder        Int      @default(0) @map("sort_order")
+  organizationName String   @default("") @map("organization_name")
+  role             String   @default("")
+  startDate        DateTime? @map("start_date")
+  endDate          DateTime? @map("end_date")
+  description      String   @default("")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("volunteer_work")
+}
+
+model ReferenceEntry {
+  id           String   @id @default(uuid())
+  resumeId     String   @map("resume_id")
+  sortOrder    Int      @default(0) @map("sort_order")
+  fullName     String   @default("") @map("full_name")
+  title        String   @default("")
+  company      String   @default("")
+  phone        String   @default("")
+  email        String   @default("")
+  relationship String   @default("")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("references_entries")
+}
+
+model CoverLetter {
+  id             String   @id @default(uuid())
+  resumeId       String   @map("resume_id")
+  userId         String   @map("user_id")
+  title          String   @default("Cover Letter")
+  recipientName  String   @default("") @map("recipient_name")
+  recipientTitle String   @default("") @map("recipient_title")
+  companyName    String   @default("") @map("company_name")
+  companyAddress String   @default("") @map("company_address")
+  greeting       String   @default("Dear Hiring Manager,")
+  bodyContent    String   @default("") @map("body_content")
+  closing        String   @default("Sincerely,")
+  templateId     String   @default("classic") @map("template_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@index([userId])
+  @@map("cover_letters")
+}
+
+model AISuggestion {
+  id            String           @id @default(uuid())
+  userId        String           @map("user_id")
+  resumeId      String           @map("resume_id")
+  sectionType   String           @map("section_type")
+  fieldName     String?          @map("field_name")
+  originalText  String           @map("original_text")
+  suggestedText String           @map("suggested_text")
+  status        SuggestionStatus @default(pending)
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("ai_suggestions")
+}
