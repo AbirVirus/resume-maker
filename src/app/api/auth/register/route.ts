@@ -31,9 +31,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
-    console.error("Register error:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Register error:", message);
+    console.error("Register stack:", error instanceof Error ? error.stack : "");
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", detail: message },
       { status: 500 },
     );
   }
