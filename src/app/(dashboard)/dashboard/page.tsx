@@ -111,11 +111,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-          <DialogTrigger asChild>
-            <Button gap="2">
-              <Plus className="h-4 w-4" /> New Resume
-            </Button>
-          </DialogTrigger>
+          <DialogTrigger render={<Button className="gap-2"><Plus className="h-4 w-4" />New Resume</Button>} />
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Resume</DialogTitle>
@@ -206,7 +202,7 @@ export default function DashboardPage() {
                     </CardDescription>
                   </div>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuTrigger onClick={(e) => e.stopPropagation()}>
                       <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
                         <MoreVertical className="h-4 w-4" />
                       </Button>

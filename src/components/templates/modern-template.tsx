@@ -1,5 +1,5 @@
 import type { TemplateProps } from "@/types/template";
-import { Mail, Phone, MapPin, Globe, Linkedin, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, ExternalLink, Code } from "lucide-react";
 
 function formatDate(d: string | null): string {
   if (!d) return "";
@@ -50,13 +50,13 @@ export default function ModernTemplate({ data, settings }: TemplateProps) {
           )}
           {personalInfo?.linkedin && (
             <div className="flex items-center gap-2">
-              <Linkedin className="w-3 h-3 shrink-0" />
+              <ExternalLink className="w-3 h-3 shrink-0" />
               <span className="break-all">{personalInfo.linkedin}</span>
             </div>
           )}
           {personalInfo?.github && (
             <div className="flex items-center gap-2">
-              <Github className="w-3 h-3 shrink-0" />
+              <Code className="w-3 h-3 shrink-0" />
               <span className="break-all">{personalInfo.github}</span>
             </div>
           )}

@@ -1,5 +1,5 @@
 import type { TemplateProps } from "@/types/template";
-import { Mail, Phone, MapPin, Globe, Linkedin, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, ExternalLink, Code } from "lucide-react";
 
 function formatDate(d: string | null): string {
   if (!d) return "";
@@ -31,10 +31,10 @@ export default function CreativeTemplate({ data, settings }: TemplateProps) {
             <span className="flex items-center gap-1"><Globe className="w-3 h-3" />{personalInfo.website}</span>
           )}
           {personalInfo?.linkedin && (
-            <span className="flex items-center gap-1"><Linkedin className="w-3 h-3" />{personalInfo.linkedin}</span>
+            <span className="flex items-center gap-1"><ExternalLink className="w-3 h-3" />{personalInfo.linkedin}</span>
           )}
           {personalInfo?.github && (
-            <span className="flex items-center gap-1"><Github className="w-3 h-3" />{personalInfo.github}</span>
+            <span className="flex items-center gap-1"><Code className="w-3 h-3" />{personalInfo.github}</span>
           )}
         </div>
       </div>

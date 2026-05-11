@@ -1,17 +1,19 @@
+type Dateish = string | Date | null;
+
 interface ResumeExportData {
   personalInfo?: { fullName: string; email: string; phone: string; location: string; linkedin: string; website: string; github: string } | null;
   summary?: { content: string } | null;
-  workExperiences?: { jobTitle: string; companyName: string; startDate: string | null; endDate: string | null; isCurrent: boolean; description: string }[];
-  educations?: { degree: string; schoolName: string; fieldOfStudy: string; startDate: string | null; endDate: string | null; gpa: string }[];
+  workExperiences?: { jobTitle: string; companyName: string; startDate: Dateish; endDate: Dateish; isCurrent: boolean; description: string }[];
+  educations?: { degree: string; schoolName: string; fieldOfStudy: string; startDate: Dateish; endDate: Dateish; gpa: string }[];
   skills?: { skillName: string; category: string | null; proficiencyLevel: string }[];
-  sectionOrder?: string[];
+  sectionOrder?: readonly string[] | string[];
 }
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim();
 }
 
-function fmtDate(d: string | null): string {
+function fmtDate(d: Dateish): string {
   if (!d) return "";
   const date = new Date(d);
   return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });

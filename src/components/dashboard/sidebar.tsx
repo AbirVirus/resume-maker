@@ -73,24 +73,22 @@ export function DashboardSidebar({ user }: SidebarProps) {
 
       <div className="border-t p-3">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="w-full justify-start gap-2.5 px-3">
-              <Avatar className="h-7 w-7">
-                <AvatarImage src={user.image || undefined} />
-                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col items-start text-xs">
-                <span className="font-medium">{user.name}</span>
-                <span className="text-muted-foreground">{user.email}</span>
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="ghost" className="w-full justify-start gap-2.5 px-3 h-auto">
+                <Avatar className="h-7 w-7">
+                  <AvatarImage src={user.image || undefined} />
+                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col items-start text-xs">
+                  <span className="font-medium">{user.name}</span>
+                  <span className="text-muted-foreground">{user.email}</span>
+                </div>
+              </Button>
+            }
+          />
           <DropdownMenuContent align="start" className="w-48">
-            <DropdownMenuItem asChild>
-              <Link href="/settings" className="gap-2">
-                <Settings className="h-4 w-4" /> Settings
-              </Link>
-            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/settings" className="gap-2"><Settings className="h-4 w-4" /> Settings</Link>} />
             <DropdownMenuItem
               className="gap-2 text-destructive"
               onClick={() => signOut({ callbackUrl: "/" })}

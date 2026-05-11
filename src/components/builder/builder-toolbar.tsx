@@ -53,11 +53,7 @@ export function BuilderToolbar() {
 
   return (
     <header className="flex h-12 items-center gap-2 border-b bg-card px-3">
-      <Button variant="ghost" size="icon" asChild className="h-8 w-8">
-        <Link href="/dashboard">
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
-      </Button>
+      <Button variant="ghost" size="icon" render={<Link href="/dashboard"><ArrowLeft className="h-4 w-4" /></Link>} className="h-8 w-8" />
 
       <input
         className="w-36 bg-transparent text-sm font-medium outline-none"

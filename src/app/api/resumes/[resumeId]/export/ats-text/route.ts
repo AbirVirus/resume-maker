@@ -29,7 +29,8 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const atsText = generateATSText(resume);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const atsText = generateATSText(resume as any);
 
   return new NextResponse(atsText, {
     headers: {

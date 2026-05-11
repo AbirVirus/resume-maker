@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       personalInfo: true,
       workExperiences: { take: 3, orderBy: { sortOrder: "asc" } },
       skills: true,
-      professionalSummary: true,
+      summary: true,
     },
   });
 
@@ -42,7 +42,7 @@ Applicant name: ${resume.personalInfo?.fullName || "Unknown"}
 Target company: ${companyName}
 Target job title: ${jobTitle}
 ${recipientName ? `Recipient: ${recipientName}` : ""}
-Professional summary: ${resume.professionalSummary?.content || "Not provided"}
+Professional summary: ${resume.summary?.content || "Not provided"}
 Recent experience: ${resume.workExperiences.map(e => `${e.jobTitle} at ${e.companyName}`).join(", ")}
 Key skills: ${resume.skills.map(s => s.skillName).join(", ")}
 ${additionalNotes ? `Additional notes: ${additionalNotes}` : ""}
